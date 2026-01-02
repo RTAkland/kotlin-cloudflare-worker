@@ -2,6 +2,11 @@
 
 A library to running kotlin/js on cloudflare worker.
 
+<div style="display: block">
+<a href="README.md">English</a>
+<a href="README-zh.md">中文</a>
+</div>
+
 # Get started
 
 ## Setup
@@ -22,7 +27,7 @@ repositories {
 ```kotlin
 // to get latest version of this lib, go to 
 // https://next.pkg.rtast.cn/#/releases/cn/rtast/kotlin-cfworker/kotlin-cloudflare-worker/
-implementation("cn.rtast.kotlin-cfworker:kotlin-cloudflare-worker:1.0.1")
+implementation("cn.rtast.kotlin-cfworker:kotlin-cloudflare-worker:1.0.2")
 ```
 
 ## Run app
@@ -147,6 +152,20 @@ val ba: ByteArray = bb.toByteArray()
 // convert ByteArray to ByteBuffer
 val bb2: ByteBuffer = ba.toArrayBuffer()
 ```
+
+# CPU Time limit
+
+Cloudflare worker free tier have a limit of worker cpu limit (10ms, exclude IO waiting time), `kotlin cloudflare worker`
+depends on `kotlin-stdlib` and `kotlinx.coroutines`, which are quite heavy*, When performing CPU-bound task,
+please carefully consider whether to use JavaScript instead of Kotlin.
+
+But it works for my maven repository, I registered over 15 api endpoints.
+The avg cpu time for each endpoint does not exceed 10ms, but it may increase significantly during
+cold start (Over 50-200ms, but still responsible)
+
+![avg-cpu-time](./images/avg-cpu-time.png)
+
+> This image shows last 24 hours avg cpu time, see `P50`
 
 # Real instance
 
