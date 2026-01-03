@@ -92,7 +92,7 @@ main = "kotlin-cloudflare-worker.js"  # 必须和`outputModuleName`一致
 
 # 注意事项
 
-Cloudflare worker 使用V8引擎来驱动js脚本，线程模型为单线程，所有时间均有event loop(事件循环)驱动，在此之外的所有任务
+Cloudflare worker 使用V8引擎来驱动js脚本，线程模型为单线程，所有事件均由event loop(事件循环)驱动，在此之外的所有任务
 都会被drop, 所以不要使用协程库中的launch或任何可以凭空创建出一个挂起作用域的函数来调用suspend函数, 取而代之的是你需要从
 `handleRequest`方法中传播`CoroutineScope`(suspend), 就像下面这样
 
