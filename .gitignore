@@ -2,3 +2,5 @@
 .kotlin/
 build/
 .gradle/
+/core/.dev.vars
+/core/wrangler.toml

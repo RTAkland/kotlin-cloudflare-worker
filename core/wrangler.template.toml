@@ -1,0 +1,6 @@
+name = "kotlin-cloudflare-worker"  # any name you want
+account_id = "<your account id>"
+workers_dev = false
+preview_urls = false
+compatibility_date = "2022-08-11"
+main = "kotlin-cloudflare-worker.js"  # Set this value same as `outputModuleName`

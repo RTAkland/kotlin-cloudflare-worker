@@ -20,9 +20,12 @@ import cn.rtast.cfworker.route.type.AbstractRoute
 import cn.rtast.cfworker.route.type.RegexRoute
 import cn.rtast.cfworker.route.type.StringRoute
 import cn.rtast.cfworker.util.decodeBase64String
+import cn.rtast.cfworker.websocket.WebsocketEventHandler
+import cn.rtast.cfworker.websocket.WebsocketRoute
 import org.w3c.dom.url.URL
 import org.w3c.fetch.Request
 import org.w3c.fetch.Response
+import org.w3c.fetch.ResponseInit
 
 /**
  * Kotlin cloudflare worker logic entrypoint class
@@ -31,12 +34,21 @@ public class WorkerApplication(
     public val corsConfig: CORSConfig = CORSConfig(),
 ) {
     internal val routes: MutableList<AbstractRoute> = mutableListOf()
+    internal val websocketRoutes: MutableList<WebsocketRoute> = mutableListOf()
 
     public suspend fun handle(request: Request): Response {
         val url = URL(request.url)
         val path = url.pathname
         val method = HttpMethod.fromString(request.method) ?: HttpMethod.GET
         if (method == HttpMethod.OPTIONS && corsConfig.enabled) return respondEmpty()
+        if (request.headers.get("upgrade") != null) {
+            val route = websocketRoutes.firstOrNull { r ->
+                r.stringPath?.let { it == url.pathname } ?: r.regexPath?.matches(url.pathname) ?: false
+            } ?: return Response("Not Found", ResponseInit(404))
+            val handler = WebsocketEventHandler(request = request)
+            route.block(handler)
+            return handler.handle()
+        }
         val matchedRoutes = routes.filter {
             when (it) {
                 is StringRoute -> it.path == path

@@ -26,8 +26,8 @@ repositories {
 
 ```kotlin
 // to get latest version of this lib, go to 
-// https://next.pkg.rtast.cn/#/releases/cn/rtast/kotlin-cfworker/kotlin-cloudflare-worker/
-implementation("cn.rtast.kotlin-cfworker:kotlin-cloudflare-worker:1.0.2")
+// https://next.pkg.rtast.cn/#/releases/cn/rtast/kotlin-cfworker/core/
+implementation("cn.rtast.kotlin-cfworker:core:1.0.2")
 ```
 
 ## Run app

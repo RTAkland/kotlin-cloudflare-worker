@@ -15,6 +15,8 @@ package cn.rtast.cfworker
 
 import cn.rtast.cfworker.response.respondText
 import cn.rtast.cfworker.route.route
+import cn.rtast.cfworker.websocket.readText
+import cn.rtast.cfworker.websocket.webSocket
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
@@ -38,6 +40,15 @@ public fun handleRequest(request: Request): Promise<Response> = GlobalScope.prom
     val server = WorkerApplication().apply {
         route("/") {
             respondText("Hello kotlin cloudflare worker")
+        }
+
+        webSocket("/ws") {
+            onMessage {
+                println(it.readText())
+            }
+
+            onClose {
+            }
         }
     }
     return@promise server.handle(request)
