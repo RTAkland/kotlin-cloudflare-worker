@@ -21,8 +21,8 @@ repositories {
 
 ```kotlin
 // 最新版本请前往下方链接查看
-// https://next.pkg.rtast.cn/#/releases/cn/rtast/kotlin-cfworker/kotlin-cloudflare-worker/
-implementation("cn.rtast.kotlin-cfworker:kotlin-cloudflare-worker:1.0.2")
+// https://next.pkg.rtast.cn/#/releases/cn/rtast/kotlin-cfworker/core/
+implementation("cn.rtast.kotlin-cfworker:core:1.0.2")
 ```
 
 ## Hello world程序
@@ -128,6 +128,33 @@ fun handleRequest(request: Request): Promise<Response> = GlobalScope.promise {
 
 不要使用ktor来作为http客户端, 因为cloudflare worker不是一个标准的nodejs环境， 你需要使用 fetch
 `cn.rtast.cfworker.client.fetch` 来发送http请求, 注意不是`window.fetch`， `window.fetch`是浏览器API
+
+# Websocket
+
+仅支持Websocket服务器
+
+> 使用类似ktor的语法注册websocket端点
+
+```kotlin
+@JsExport
+fun handleRequest(request: Request): Promise<Response> = GlobalScope.promise {
+    val server = WorkerApplication().apply {
+        route("/") {
+            respondText("Hello kotlin cloudflare worker")
+        }
+
+        webSocket("/ws") {
+            onMessage {
+                println(it.readText())
+            }
+
+            onClose {
+            }
+        }
+    }
+    return@promise server.handle(request)
+}
+```
 
 # ByteArray 和 ByteBuffer 转换
 

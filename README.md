@@ -137,6 +137,33 @@ fun handleRequest(request: Request): Promise<Response> = GlobalScope.promise {
 Cloudflare worker is not a standard nodejs environment, do http requests must
 use fetch api(not `window.fetch`, this is browser api), use `cn.rtast.cfworker.client.fetch` instead,
 
+# Websocket 
+
+Only websocket server is supported
+
+> ktor like expression
+
+```kotlin
+@JsExport
+fun handleRequest(request: Request): Promise<Response> = GlobalScope.promise {
+    val server = WorkerApplication().apply {
+        route("/") {
+            respondText("Hello kotlin cloudflare worker")
+        }
+
+        webSocket("/ws") {
+            onMessage {
+                println(it.readText())
+            }
+
+            onClose {
+            }
+        }
+    }
+    return@promise server.handle(request)
+}
+```
+
 # ByteArray and ByteBuffer cast
 
 Kotlin cloudflare worker provided api to mutual conversion,
