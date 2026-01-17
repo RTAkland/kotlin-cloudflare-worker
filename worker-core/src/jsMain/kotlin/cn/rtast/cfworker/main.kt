@@ -13,6 +13,9 @@
 
 package cn.rtast.cfworker
 
+import cn.rtast.cfworker.auth.AuthResult
+import cn.rtast.cfworker.auth.provider.BearerAuthenticator
+import cn.rtast.cfworker.client.Url
 import cn.rtast.cfworker.response.respondText
 import cn.rtast.cfworker.route.route
 import cn.rtast.cfworker.websocket.readText
@@ -49,6 +52,13 @@ public fun handleRequest(request: Request): Promise<Response> = GlobalScope.prom
 
             onClose {
             }
+        }
+
+        route("/protected", setOf(HttpMethod.GET), BearerAuthenticator { request, credential ->
+            val name = request.Url.searchParams.get("name")
+            return@BearerAuthenticator if (name == "admin") AuthResult.OK else AuthResult.UNAUTHORIZED
+        }) {
+            respondText("Success")
         }
     }
     return@promise server.handle(request)

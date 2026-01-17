@@ -8,6 +8,6 @@ import org.w3c.fetch.Request
  * An interface for authenticating
  * It's sealed
  */
-public sealed interface Authenticator<in C : HttpCredential> {
-    public suspend fun authenticate(request: Request, credential: C?): AuthResult
+public sealed interface Authenticator<out C : HttpCredential> {
+    public suspend fun authenticate(request: Request, credential: @UnsafeVariance C?): AuthResult
 }

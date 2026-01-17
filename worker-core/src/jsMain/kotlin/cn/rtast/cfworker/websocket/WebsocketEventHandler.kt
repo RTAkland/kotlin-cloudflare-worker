@@ -28,7 +28,7 @@ import org.w3c.files.Blob
 public class WebsocketEventHandler(public val request: Request) {
     private var onMessageBlock: (suspend (MessageEvent) -> Unit)? = null
     private var onCloseBlock: (suspend (CloseEvent) -> Unit?)? = null
-    private var onOpenBlock: (suspend (Event) -> Unit)? = null
+    private var onOpenBlock: (suspend () -> Unit)? = null
     private var onErrorBlock: (suspend (Event) -> Unit)? = null
     private var requireUpgradeHeaderBlock: (suspend (Request) -> Response)? =
         { Response("Expected Upgrade: websocket", ResponseInit(426)) }
@@ -46,7 +46,7 @@ public class WebsocketEventHandler(public val request: Request) {
         onCloseBlock = block
     }
 
-    public fun onOpen(block: suspend (Event) -> Unit) {
+    public fun onOpen(block: suspend () -> Unit) {
         onOpenBlock = block
     }
 
@@ -66,9 +66,9 @@ public class WebsocketEventHandler(public val request: Request) {
         val server = pair[1]
         server.accept()
         clients.add(server)
+        GlobalScope.promise { onOpenBlock?.invoke() }
         server.addEventListener("message", { e: MessageEvent -> GlobalScope.promise { onMessageBlock?.invoke(e) } })
         server.addEventListener("error", { e: Event -> GlobalScope.promise { onErrorBlock?.invoke(e) } })
-        server.addEventListener("open", { e: Event -> GlobalScope.promise { onErrorBlock?.invoke(e) } })
         server.addEventListener("close", { e: CloseEvent ->
             GlobalScope.promise {
                 onCloseBlock?.invoke(e)

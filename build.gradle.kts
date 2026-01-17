@@ -1,22 +1,23 @@
 plugins {
+    kotlin("jvm") version "2.2.21" apply false
     kotlin("multiplatform") version "2.2.21" apply false
+    kotlin("plugin.serialization") version "2.2.21" apply false
     id("maven-publish")
 }
 
-
-
+val libVersion: String by extra
 
 allprojects {
-    group = "cn.rtast.kotlin-cfworker"
-    version = "1.0.2"
+    group = "kotlin-cloudflare-worker"
+    version = libVersion
 
     repositories {
         mavenCentral()
+        maven("https://repo.maven.rtast.cn/releases")
     }
 }
 
 subprojects {
-    apply(plugin = "org.jetbrains.kotlin.multiplatform")
     apply(plugin = "maven-publish")
 
     publishing {

@@ -2,5 +2,6 @@
 .kotlin/
 build/
 .gradle/
-/core/.dev.vars
-/core/wrangler.toml
+/worker-core/.dev.vars
+/worker-core/wrangler.toml
+/worker-plugin-test/wrangler.toml
