@@ -1,7 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
 include(":worker-core")
-include(":worker-serialization")
+include(":worker-serialization-json")
+include(":worker-serialization-protobuf")
 include(":worker-gradle-plugin")
 
 pluginManagement {
