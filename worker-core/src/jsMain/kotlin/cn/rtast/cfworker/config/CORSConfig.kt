@@ -28,4 +28,8 @@ public class CORSConfig {
         HttpMethod.DELETE, HttpMethod.DELETE,
         HttpMethod.OPTIONS
     )
+
+    public var allowCredentials: Boolean = false
+
+    public var maxAge: Int = 86400
 }

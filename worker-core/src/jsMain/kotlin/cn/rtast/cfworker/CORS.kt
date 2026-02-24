@@ -14,21 +14,14 @@ import org.w3c.fetch.ResponseInit
  * Auto add cors response headers
  */
 @Suppress("FunctionName")
-internal fun WorkerApplication._addCorsHeaders(
-    init: ResponseInit,
-    origin: String = "*",
-    allowedMethods: Set<HttpMethod> = setOf(
-        HttpMethod.GET, HttpMethod.POST,
-        HttpMethod.DELETE, HttpMethod.DELETE,
-        HttpMethod.OPTIONS
-    ),
-): ResponseInit {
+internal fun WorkerApplication._addCorsHeaders(init: ResponseInit, ): ResponseInit {
     val headers = if (this.corsConfig.enabled) {
         val corsHeaders = init.headers ?: js("{}")
-        corsHeaders["Access-Control-Allow-Origin"] = origin
-        corsHeaders["Access-Control-Allow-Methods"] = allowedMethods.joinToString(", ")
+        corsHeaders["Access-Control-Allow-Origin"] = corsConfig.origin
+        corsHeaders["Access-Control-Allow-Methods"] = corsConfig.allowedMethods.joinToString(", ")
         corsHeaders["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-        corsHeaders["Access-Control-Max-Age"] = "86400"
+        if (corsConfig.allowCredentials) corsHeaders["Access-Control-Allow-Credentials"] = corsConfig.allowCredentials
+        corsHeaders["Access-Control-Max-Age"] = "${corsConfig.maxAge}"
         corsHeaders
     } else init.headers
     return ResponseInit(

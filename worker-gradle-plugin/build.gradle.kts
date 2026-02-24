@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     kotlin("jvm")
     id("java-gradle-plugin")
@@ -19,4 +21,13 @@ gradlePlugin {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.21")
+}
+
+tasks.compileKotlin {
+    compilerOptions.jvmTarget = JvmTarget.JVM_11
+}
+
+tasks.compileJava {
+    sourceCompatibility = "11"
+    targetCompatibility = "11"
 }
